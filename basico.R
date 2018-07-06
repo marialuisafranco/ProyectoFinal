@@ -21,15 +21,15 @@ summary(colb)
 # el plot de cada uno seria el histograma:
 
 hist(colb$IDH)
-hist(colb$Población.Cabecera)
-hist(colb$Población.Resto)
+hist(colb[,3])
+hist(colb[,4])
 
 # dado el sesgo de las pobaciones, 
 # podriamos transformarla para que se acerque a la 
 # normalidad
 
-colb$cabeLog=log(colb$Población.Cabecera)
-colb$restoLog=log(colb$Población.Resto)
+colb$cabeLog=log(colb[,3])
+colb$restoLog=log(colb[,4])
 
 hist(colb$cabeLog)
 hist(colb$restoLog)
@@ -164,3 +164,4 @@ legend('left', legend = c("LOW","UP","MEDIUM"),
        cex = 0.6, 
        bty = "n",
        title="conglomerado")
+

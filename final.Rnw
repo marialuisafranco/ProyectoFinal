@@ -1,0 +1,279 @@
+\documentclass{article}
+
+%%%%
+% PLOTS mapas y conglomerados
+% bibliografia
+%%%%
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage{authblk}
+\usepackage{adjustbox}
+
+\usepackage{natbib}
+
+
+
+\title{LOS INDICES DEL MUNDO}
+% autores
+\renewcommand\Authand{, y }
+\author[1]{\normalsize Maria Luisa Franco}
+
+
+\affil[1,2]{\small  Escuela de Ingenieria,Universidad de los Andes\\
+\texttt{{delcurso,deallado}@uniandes.edu.col}}
+\affil[1]{\small Instituto de altas investigaciones financieras\\
+Banco del Parque\\
+\texttt{delcurso@bp.com.col}}
+
+\date{30 de Junio de 2018}
+
+%%%%
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\maketitle
+
+
+\begin{abstract}
+Este es mi primer trabajo en exploracion y modelamiento de indices usando LATEX. Este trabajo lo he hecho bajo la filosofía de trabajo replicable. Este es mi primer trabajo en exploracion y modelamiento de indices usando LATEX. Este trabajo lo he hecho bajo la filosofía de trabajo replicable. Este es mi primer trabajo en exploracion y modelamiento de indices usando LATEX. Este trabajo lo he hecho bajo la filosofía de trabajo replicable. Este es mi primer trabajo en exploracion y modelamiento de indices usando LATEX. Este trabajo lo he hecho bajo la filosofía de trabajo replicable.
+\end{abstract}
+
+\section*{Introducción}
+
+Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho. Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho.Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho.Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho.
+Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho.Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho.Aqui les presento mi investigacion sobre diversos indices sociales en el mundo. Los indices los conseguí de wikipedia, espero que les gusten mucho.
+
+Comencemos viendo que hay en la sección \ref{univariada} en la página \pageref{univariada}.
+
+\clearpage
+
+
+
+\section{Exploración Univariada}\label{univariada}
+
+En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice. En esta sección exploro cada índice.
+
+
+
+<<getData, echo=FALSE>>=
+filename="colombia.csv"
+colb=read.csv(filename, stringsAsFactors = FALSE)
+names(colb)
+@
+
+
+Para conocer el comportamiento de las variables se ha preparado la Tabla \ref{Tfrecuencias}, donde se describe la distribución de las modalidades de cada variable. Los números representan la situación de algun país en ese indicador, donde el mayor valor numérico es la mejor situación.
+
+<<estadisticos, results=tex, echo=FALSE>>=
+library(stargazer)
+stargazer(colb ,title = "Medidas estadisticas", label = "stats",summary.stat = c("n", "median","mean","min","max"))
+@
+
+
+Como apreciamos en la Tabla \ref{Tfrecuencias}, los países en la mejor situación son los menos, salvo en el caso del \emph{índice de libertas mundial}\footnote{Nótese que esto se puede deber a la {\bf menor} cantidad de categorías.}
+
+\clearpage
+
+Para resaltar lo anterior, tenemos la Figura \ref{barplots} en la página \pageref{barplots}.
+
+
+%%%%% figure
+\begin{figure}[h]
+\centering
+
+<<barplots, echo=FALSE,fig=TRUE>>=
+par(mfrow=c(2,2))
+
+hist(colb$IDH)
+
+###
+
+hist(colb[,3])
+
+
+#####
+hist(colb[,4])
+
+colb$cabeLog=log(colb[,3])
+colb$restoLog=log(colb[,4])
+
+hist(colb$cabeLog)
+hist(colb$restoLog)
+
+@
+ 
+\caption{Distribución de Indicadores}
+\label{barplots}
+\end{figure}
+
+Además de la distribución de los variable, es importante saber el valor central. Como los valores son de naturaleza ordinal debemos pedir la {\bf mediana} y otras medidas de posición (como los \emph{cuartiles}, los que no pediremos pues son pocos valores). La mediana de cada variable la mostramos en la Tabla \ref{stats} en la página \pageref{stats}.
+
+
+\section{Exploración Bivariada}
+
+En este trabajo estamos interesados en el impacto de los otros indices en el nivel de Democracia. Veamos las relaciones bivariadas que tiene esta variable con todas las demás:
+
+<<corrDem, results=tex, echo=FALSE>>=
+
+library(stargazer)
+explanans=names(colb)[c(7:8)] # usando las logs
+corrDem=cor(colb$IDH,colb[,explanans],
+            use = "na.or.complete")
+
+stargazer(corrDem, title="Correlación de IDH con las demás variables",label = "corrDem")
+
+@
+
+
+Veamos la correlación entre las variables independientes:
+
+
+<<corrTableX, results=tex, echo=FALSE>>=
+# y la correlación entre las variables independientes:
+
+corrTableX=round(cor(colb[,explanans],
+                         use = "na.or.complete"),2)
+corrTableX_copy=corrTableX
+corrTableX[upper.tri(corrTableX)]<-""
+
+#ver:
+corrTableX
+
+
+# visualmente:
+stargazer(corrTableX, title="Correlación entre variables independientes",label = 'corrTableX')
+
+#(plot(colb[,explanans])
+
+@
+
+Lo visto en la Tabla \ref{corrTableX} se refuerza claramente en la Figura \ref{corrPlotX}.
+
+\begin{figure}[h]
+\centering
+\begin{adjustbox}{width=7cm,height=7cm,clip,trim=1.5cm 0.5cm 0cm 1.5cm}
+
+<<corrPlotX, echo=FALSE,fig=TRUE>>=
+library(corrplot)
+corrplot(corrTableX_copy, type = "lower", diag = F,
+         addCoef.col = "black")
+@
+
+\end{adjustbox}
+\caption{correlación entre predictores}
+\label{corrPlotX}
+\end{figure}
+
+
+\clearpage
+
+\section{Modelos de Regresión}
+
+Finalmente, vemos los modelos propuestos. Primero sin la libertad mundial como independiente, y luego con está. Los resultados se muestran en la Tabla \ref{regresiones} de la página \pageref{regresiones}.
+
+<<regresiones, echo=FALSE>>=
+LinRegA = lm(IDH ~ ., data = colb[,c(1,7)])
+LinRegB = lm(IDH ~ ., data = colb[,c(1,7:8)])
+@
+
+
+<<regresionesPlot,results=tex, echo=false>>=
+stargazer(LinRegA,LinRegB,
+          title = "Modelos de Regresión",
+          label = "regresiones")
+@
+
+Como se vió en la Tabla \ref{regresiones}, cuando está presente el \emph{indice de libertad mundial}, el \emph{índice de libertad de prensa} pierde significancia.
+
+ \clearpage
+
+\section{Exploración Espacial}
+
+Como acabamos de ver en la Tabla \ref{regresiones} en la página \pageref{regresiones}, si quisieras sintetizar la multidimensionalidad de nuestros indicadores, podríamos usar tres de las cuatro variables que tenemos (un par de las originales tiene demasiada correlación).
+
+Así, propongo que calculemos conglomerados de países usando toda la información de tres de los indicadores. Como nuestras variables son ordinales utilizaremos un proceso de conglomeración donde las distancia serán calculadas usando la medida {\bf macqueen} propuestas en \cite{macqueen_methods_nodate}
+Los tres conglomerados se muestran en la Figura \ref{clustmap}.
+
+<<getMap, echo=FALSE,results=hide>>=
+library(rgdal)
+folder='COL_maps'
+file='COL_adm1.shp'
+mapaFile=file.path(folder,file)
+mapCol <- rgdal::readOGR(mapaFile,stringsAsFactors=F)
+
+@
+
+
+<<Clusters, echo=FALSE,results=hide>>=
+
+library(rgdal)
+sub_colb=colb[,c(1:2,7:8)]
+mapCol_idh=merge(mapCol,sub_colb, by.x='NAME_1', by.y='Departamento',all.x=F)
+
+names(mapCol_idh)
+
+dimensions=c("NAME_1","IDH","cabeLog","restoLog")
+
+
+dataCluster=mapCol_idh@data[,c(dimensions)]
+
+
+dataCluster[,-1]=scale(dataCluster[,-1])
+resultado=kmeans(dataCluster[,-1],3)
+
+clusters=as.data.frame(resultado$cluster)
+
+clusters$NAME_1=dataCluster$NAME_1
+names(clusters)=c('cluster','NAME_1')
+
+mapCol_idh=merge(mapCol_idh,clusters, by='NAME_1',all.x=F)
+
+#names(mapCol_idh)
+@
+
+
+
+\begin{figure}[h]
+\centering
+\begin{adjustbox}{width=18cm,height=14cm,clip,trim=25cm 0cm 0cm 0cm}
+
+<<plotMapf,results=tex, echo=FALSE, fig=TRUE>>=
+
+# grafico mapa basico
+## a pintar:
+
+library(RColorBrewer)
+library(classInt)
+#variable a colorear
+varToPLot=mapCol_idh$cluster
+
+# decidir color:
+unique(varToPLot)
+aggregate(mapCol_idh@data[,c(10,11,12)],
+          by=list(mapCol_idh@data$cluster),FUN=mean)
+
+#preparo colores
+numberOfClasses = length(unique(varToPLot)) 
+plot(mapCol,col='grey',border=F)
+
+# grafico mapa cluster
+colorForScale='Set2'
+paleta = brewer.pal(numberOfClasses, colorForScale)
+plot(mapCol_idh, col = paleta[varToPLot],border=F,add=T)
+legend('top', legend = c("LOW","UP","MEDIUM"),
+       fill = paleta, 
+       cex = 0.7, 
+       bty = "n",
+       title="conglomerado")
+@
+
+\end{adjustbox}
+\caption{Paises conglomerados segun sus indicadores sociopolaticos}\label{clustmap}
+\end{figure}
+
+
+\bibliographystyle{abbrv}
+\renewcommand{\refname}{Bibliografia}
+\bibliography{Colombia}
+
+\end{document}
