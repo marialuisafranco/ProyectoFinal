@@ -82,23 +82,23 @@ Para resaltar lo anterior, tenemos la Figura \ref{barplots} en la página \pager
 \centering
 
 <<barplots, echo=FALSE,fig=TRUE>>=
-par(mfrow=c(2,2))
+par(mfrow=c(3,2))
 
-hist(colb$IDH)
+hist(colb$IDH, main = "Indice de Desarrollo Humano", col="Yellow", ylab="Frecuencia", xlab="Cantidad")
 
 ###
 
-hist(colb[,3])
+hist(colb[,3], main = "Poblacion Cabecera", col="Orange", ylab="Frecuencia", xlab="Cantidad")
 
 
 #####
-hist(colb[,4])
+hist(colb[,4], main = "Poblacion Resto", col="Purple", ylab="Frecuencia", xlab="Cantidad")
 
 colb$cabeLog=log(colb[,3])
 colb$restoLog=log(colb[,4])
 
-hist(colb$cabeLog)
-hist(colb$restoLog)
+hist(colb$cabeLog, main = "Logaritmo Cabecera", col="Blue", ylab="Frecuencia", xlab="Cantidad")
+hist(colb$restoLog, main = "Logaritmo Cabecera", col="Red", ylab="Frecuencia", xlab="Cantidad")
 
 @
  
@@ -153,10 +153,8 @@ Lo visto en la Tabla \ref{corrTableX} se refuerza claramente en la Figura \ref{c
 \centering
 \begin{adjustbox}{width=7cm,height=7cm,clip,trim=1.5cm 0.5cm 0cm 1.5cm}
 
-<<corrPlotX, echo=FALSE,fig=TRUE>>=
-library(corrplot)
-corrplot(corrTableX_copy, type = "lower", diag = F,
-         addCoef.col = "black")
+<<verCorr, echo=false, fig=true>>=
+plot(colb[,explanans], main = "Figura Logaritmos", ylab="Resto", xlab="Cabecera")
 @
 
 \end{adjustbox}
@@ -235,7 +233,7 @@ mapCol_idh=merge(mapCol_idh,clusters, by='NAME_1',all.x=F)
 
 \begin{figure}[h]
 \centering
-\begin{adjustbox}{width=18cm,height=14cm,clip,trim=25cm 0cm 0cm 0cm}
+\begin{adjustbox}{width=15cm,height=13cm,clip,trim=25cm 0cm 0cm 0cm}
 
 <<plotMapf,results=tex, echo=FALSE, fig=TRUE>>=
 
